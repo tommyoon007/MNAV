@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>MSTR MNAV Pro Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📊 MSTR MNAV Pro</h1>
+            <p class="subtitle">실시간 분석 & 예측 도구</p>
+        </header>
+
+        <!-- Update Time -->
+        <div class="update-time" id="updateTime">
+            마지막 업데이트: -
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab active" data-tab="realtime">실시간</button>
+            <button class="tab" data-tab="calculator">계산기</button>
+            <button class="tab" data-tab="history">차트</button>
+        </div>
+
+        <!-- Realtime Tab -->
+        <div class="tab-content active" id="realtime-tab">
+            <!-- Price Cards -->
+            <div class="cards">
+                <div class="card btc-card">
+                    <div class="card-header">
+                        <span class="icon">₿</span>
+                        <span class="label">Bitcoin</span>
+                    </div>
+                    <div class="price" id="btcPrice">-</div>
+                    <div class="change" id="btcChange">-</div>
+                </div>
+
+                <div class="card mstr-card">
+                    <div class="card-header">
+                        <span class="icon">📈</span>
+                        <span class="label">MSTR</span>
+                    </div>
+                    <div class="price" id="mstrPrice">-</div>
+                    <div class="change" id="mstrChange">-</div>
+                </div>
+            </div>
+
+            <!-- MNAV Section -->
+            <div class="mnav-section">
+                <h2>순자산가치 (MNAV)</h2>
+                <div class="mnav-box">
+                    <div class="mnav-item">
+                        <span class="mnav-label">BTC 보유량</span>
+                        <span class="mnav-value" id="btcHoldings">-</span>
+                    </div>
+                    <div class="mnav-item">
+                        <span class="mnav-label">BTC 총 가치</span>
+                        <span class="mnav-value" id="btcTotalValue">-</span>
+                    </div>
+                    <div class="mnav-item">
+                        <span class="mnav-label">희석 주식 수</span>
+                        <span class="mnav-value" id="sharesOutstanding">-</span>
+                    </div>
+                    <div class="mnav-item highlight">
+                        <span class="mnav-label">주당 MNAV</span>
+                        <span class="mnav-value" id="mnavPerShare">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium/Discount -->
+            <div class="premium-section">
+                <div class="premium-box" id="premiumBox">
+                    <div class="premium-label">프리미엄/디스카운트</div>
+                    <div class="premium-value" id="premiumValue">-</div>
+                    <div class="premium-description" id="premiumDesc">계산 중...</div>
+                </div>
+            </div>
+
+            <!-- Trading Signal -->
+            <div class="signal-section" id="signalSection">
+                <div class="signal-box">
+                    <div class="signal-icon" id="signalIcon">⏳</div>
+                    <div class="signal-text" id="signalText">데이터 로딩 중...</div>
+                    <div class="signal-detail" id="signalDetail"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator Tab -->
+        <div class="tab-content" id="calculator-tab">
+            <div class="calculator-section">
+                <h2>💰 가격 계산기</h2>
+                
+                <!-- BTC Price Input -->
+                <div class="calc-card">
+                    <h3>BTC 가격 → MSTR 가격 예측</h3>
+                    <div class="input-group">
+                        <label>BTC 가격 입력 ($)</label>
+                        <input type="number" id="btcPriceInput" placeholder="95000" value="95000">
+                    </div>
+                    <div class="input-group">
+                        <label>예상 프리미엄 (%)</label>
+                        <input type="number" id="expectedPremium" placeholder="50" value="50">
+                    </div>
+                    <button class="calc-btn" onclick="calculateMSTRPrice()">계산하기</button>
+                    <div class="calc-result" id="mstrPredictResult"></div>
+                </div>
+
+                <!-- MSTR Price Input -->
+                <div class="calc-card">
+                    <h3>MSTR 가격 → 필요한 BTC 가격</h3>
+                    <div class="input-group">
+                        <label>목표 MSTR 가격 ($)</label>
+                        <input type="number" id="targetMstrPrice" placeholder="400" value="400">
+                    </div>
+                    <div class="input-group">
+                        <label>예상 프리미엄 (%)</label>
+                        <input type="number" id="targetPremium" placeholder="50" value="50">
+                    </div>
+                    <button class="calc-btn" onclick="calculateRequiredBTC()">계산하기</button>
+                    <div class="calc-result" id="btcRequiredResult"></div>
+                </div>
+
+                <!-- Fair Value Calculator -->
+                <div class="calc-card">
+                    <h3>📊 적정가 분석</h3>
+                    <div class="fair-value-grid">
+                        <div class="fair-item">
+                            <span class="fair-label">현재 BTC</span>
+                            <span class="fair-value" id="currentBtcCalc">-</span>
+                        </div>
+                        <div class="fair-item">
+                            <span class="fair-label">현재 MNAV</span>
+                            <span class="fair-value" id="currentMnavCalc">-</span>
+                        </div>
+                        <div class="fair-item">
+                            <span class="fair-label">현재 MSTR</span>
+                            <span class="fair-value" id="currentMstrCalc">-</span>
+                        </div>
+                        <div class="fair-item highlight">
+                            <span class="fair-label">현재 프리미엄</span>
+                            <span class="fair-value" id="currentPremiumCalc">-</span>
+                        </div>
+                    </div>
+                    <div class="fair-scenarios">
+                        <h4>시나리오별 적정가</h4>
+                        <table class="scenario-table">
+                            <thead>
+                                <tr>
+                                    <th>프리미엄</th>
+                                    <th>적정 MSTR 가격</th>
+                                    <th>차이</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scenarioTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="history-tab">
+            <div class="chart-section">
+                <h2>📈 과거 데이터 분석</h2>
+                
+                <!-- Chart Controls -->
+                <div class="chart-controls">
+                    <button class="period-btn active" data-period="7">7일</button>
+                    <button class="period-btn" data-period="30">1개월</button>
+                    <button class="period-btn" data-period="90">3개월</button>
+                    <button class="period-btn" data-period="365">1년</button>
+                </div>
+
+                <!-- Premium Chart -->
+                <div class="chart-container">
+                    <h3>프리미엄/디스카운트 추이</h3>
+                    <canvas id="premiumChart"></canvas>
+                </div>
+
+                <!-- Price Chart -->
+                <div class="chart-container">
+                    <h3>BTC vs MSTR 가격 비교</h3>
+                    <canvas id="priceChart"></canvas>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">평균 프리미엄</div>
+                        <div class="stat-value" id="avgPremium">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">최고 프리미엄</div>
+                        <div class="stat-value" id="maxPremium">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">최저 프리미엄</div>
+                        <div class="stat-value" id="minPremium">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">변동성</div>
+                        <div class="stat-value" id="volatility">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refresh Button -->
+        <button class="refresh-btn" id="refreshBtn" onclick="loadData()">
+            <span class="refresh-icon">🔄</span>
+            새로고침
+        </button>
+
+        <!-- Footer -->
+        <footer>
+            <p>⚠️ 투자 판단은 본인 책임입니다</p>
+            <p class="small">데이터: CoinGecko, Yahoo Finance, Strategy.com</p>
+        </footer>
+    </div>
+
+    <script src="script-pro.js"></script>
+</body>
+</html>
