@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSTR MNAV 계산기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #4a90e2;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .result {
+            background: rgba(74, 144, 226, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            color: #b0b0b0;
+        }
+        
+        .result-value {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .premium-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .premium-box.premium {
+            border-color: #ff4444;
+            background: rgba(255, 68, 68, 0.15);
+        }
+        
+        .premium-box.discount {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.15);
+        }
+        
+        .premium-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .premium-box.premium .premium-value {
+            color: #ff4444;
+        }
+        
+        .premium-box.discount .premium-value {
+            color: #00ff88;
+        }
+        
+        .signal {
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #808080;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 MSTR MNAV 계산기</h1>
+            <p class="subtitle">간단 버전 - 수동 입력</p>
+        </header>
+
+        <div class="card">
+            <h2>💰 현재 가격 입력</h2>
+            
+            <div class="input-group">
+                <label>BTC 가격 ($)</label>
+                <input type="number" id="btcPrice" value="95000" placeholder="예: 95000">
+            </div>
+            
+            <div class="input-group">
+                <label>MSTR 주가 ($)</label>
+                <input type="number" id="mstrPrice" value="350" placeholder="예: 350">
+            </div>
+            
+            <div class="input-group">
+                <label>BTC 보유량 (개)</label>
+                <input type="number" id="btcHoldings" value="444262" placeholder="444262">
+            </div>
+            
+            <div class="input-group">
+                <label>희석 주식 수 (백만)</label>
+                <input type="number" id="shares" value="253" placeholder="253">
+            </div>
+            
+            <button onclick="calculate()">계산하기</button>
+        </div>
+
+        <div class="card" id="results" style="display: none;">
+            <h2>📊 계산 결과</h2>
+            
+            <div class="result">
+                <div class="result-item">
+                    <span class="result-label">BTC 총 가치</span>
+                    <span class="result-value" id="totalValue">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">주당 MNAV</span>
+                    <span class="result-value" id="mnav">-</span>
+                </div>
+            </div>
+            
+            <div class="premium-box" id="premiumBox">
+                <div>프리미엄/디스카운트</div>
+                <div class="premium-value" id="premium">-</div>
+                <div id="signal">-</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🧮 빠른 계산</h2>
+            
+            <div class="input-group">
+                <label>BTC가 이 가격이 되면?</label>
+                <input type="number" id="targetBtc" value="120000" placeholder="120000">
+            </div>
+            
+            <div class="input-group">
+                <label>예상 프리미엄 (%)</label>
+                <input type="number" id="targetPremium" value="50" placeholder="50">
+            </div>
+            
+            <button onclick="predictMstr()">MSTR 가격 예측</button>
+            
+            <div class="result" id="prediction" style="display: none; margin-top: 15px;">
+                <div style="text-align: center; font-size: 1.2rem;">
+                    예상 MSTR 가격: <strong id="predictedPrice">-</strong>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>⚠️ 투자 판단은 본인 책임입니다</p>
+            <p style="margin-top: 10px;">
+                💡 팁: 실시간 가격을 검색해서 입력하세요<br>
+                BTC: coinmarketcap.com<br>
+                MSTR: finance.yahoo.com
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function formatNumber(num, decimals = 0) {
+            if (decimals > 0) {
+                return num.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+            return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function calculate() {
+            // 입력값 가져오기
+            const btcPrice = parseFloat(document.getElementById('btcPrice').value);
+            const mstrPrice = parseFloat(document.getElementById('mstrPrice').value);
+            const btcHoldings = parseFloat(document.getElementById('btcHoldings').value);
+            const shares = parseFloat(document.getElementById('shares').value);
+            
+            // 유효성 검사
+            if (!btcPrice || !mstrPrice || !btcHoldings || !shares) {
+                alert('모든 값을 입력해주세요!');
+                return;
+            }
+            
+            // 계산
+            const totalValue = btcHoldings * btcPrice;
+            const mnav = totalValue / (shares * 1000000);
+            const premium = ((mstrPrice - mnav) / mnav) * 100;
+            
+            // 결과 표시
+            document.getElementById('totalValue').textContent = '$' + formatNumber(totalValue / 1000000000, 2) + 'B';
+            document.getElementById('mnav').textContent = '$' + formatNumber(mnav);
+            document.getElementById('premium').textContent = (premium > 0 ? '+' : '') + premium.toFixed(1) + '%';
+            
+            // 프리미엄 박스 스타일
+            const premiumBox = document.getElementById('premiumBox');
+            premiumBox.className = 'premium-box';
+            if (premium > 0) {
+                premiumBox.classList.add('premium');
+            } else {
+                premiumBox.classList.add('discount');
+            }
+            
+            // 신호
+            let signal = '';
+            if (premium >= 30) {
+                signal = '🔴 매도 고려 (고평가)';
+            } else if (premium <= -10) {
+                signal = '🟢 매수 고려 (저평가)';
+            } else {
+                signal = '🟡 관망 (적정)';
+            }
+            document.getElementById('signal').textContent = signal;
+            
+            // 결과 카드 표시
+            document.getElementById('results').style.display = 'block';
+            
+            // 스크롤
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function predictMstr() {
+            const targetBtc = parseFloat(document.getElementById('targetBtc').value);
+            const targetPremium = parseFloat(document.getElementById('targetPremium').value);
+            const btcHoldings = parseFloat(document.getElementById('btcHoldings').value);
+            const shares = parseFloat(document.getElementById('shares').value);
+            
+            if (!targetBtc || !btcHoldings || !shares) {
+                alert('값을 입력해주세요!');
+                return;
+            }
+            
+            const totalValue = btcHoldings * targetBtc;
+            const mnav = totalValue / (shares * 1000000);
+            const predictedMstr = mnav * (1 + targetPremium / 100);
+            
+            document.getElementById('predictedPrice').textContent = '$' + formatNumber(predictedMstr);
+            document.getElementById('prediction').style.display = 'block';
+        }
+        
+        // 페이지 로드 시 자동 계산
+        window.onload = function() {
+            calculate();
+        };
+    </script>
+</body>
+</html>
