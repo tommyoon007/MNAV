@@ -129,6 +129,9 @@ function resetDefaults() {
     document.getElementById('premium').textContent = '-';
     document.getElementById('signal').textContent = '-';
     document.getElementById('predictedMstrPrice').textContent = '-';
+    
+    // localStorage 삭제
+    localStorage.removeItem('mstrCalculatorInputs');
 }
 
 // 숫자 포맷팅 함수
@@ -141,10 +144,45 @@ function formatNumber(num) {
     return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }
 
-// Enter 키로 계산 실행
+// 입력값 저장 함수
+function saveInputs() {
+    const inputs = {
+        btcPrice: document.getElementById('btcPrice').value,
+        mstrPrice: document.getElementById('mstrPrice').value,
+        btcHoldings: document.getElementById('btcHoldings').value,
+        dilutedShares: document.getElementById('dilutedShares').value,
+        targetBtcPrice: document.getElementById('targetBtcPrice').value,
+        expectedPremium: document.getElementById('expectedPremium').value
+    };
+    localStorage.setItem('mstrCalculatorInputs', JSON.stringify(inputs));
+}
+
+// 입력값 불러오기 함수
+function loadInputs() {
+    const savedInputs = localStorage.getItem('mstrCalculatorInputs');
+    if (savedInputs) {
+        const inputs = JSON.parse(savedInputs);
+        document.getElementById('btcPrice').value = inputs.btcPrice || '';
+        document.getElementById('mstrPrice').value = inputs.mstrPrice || '';
+        document.getElementById('btcHoldings').value = inputs.btcHoldings || MSTR_DATA.btcHoldings;
+        document.getElementById('dilutedShares').value = inputs.dilutedShares || MSTR_DATA.dilutedShares;
+        document.getElementById('targetBtcPrice').value = inputs.targetBtcPrice || '';
+        document.getElementById('expectedPremium').value = inputs.expectedPremium || '';
+    } else {
+        // 처음 사용하는 경우 기본값 설정
+        document.getElementById('btcHoldings').value = MSTR_DATA.btcHoldings;
+        document.getElementById('dilutedShares').value = MSTR_DATA.dilutedShares;
+    }
+}
+
+// Enter 키로 계산 실행 및 자동 저장
 document.addEventListener('DOMContentLoaded', function() {
+    // 페이지 로드 시 저장된 값 불러오기
+    loadInputs();
+    
     const inputs = document.querySelectorAll('input[type="number"]');
     inputs.forEach(input => {
+        // Enter 키 이벤트
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 if (this.id === 'targetBtcPrice' || this.id === 'expectedPremium') {
@@ -153,6 +191,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     calculate();
                 }
             }
+        });
+        
+        // 입력값 변경 시 자동 저장
+        input.addEventListener('input', function() {
+            saveInputs();
+        });
+        
+        // 포커스 아웃 시에도 저장
+        input.addEventListener('blur', function() {
+            saveInputs();
         });
     });
 });
