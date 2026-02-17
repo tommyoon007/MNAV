@@ -3,418 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 MSTR MNAV 계산기</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #fff;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .icon {
-            width: 50px;
-            height: 50px;
-            background: #FFA500;
-            border-radius: 8px;
-        }
-
-        .subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-title {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            font-weight: 500;
-        }
-
-        input[type="number"]:focus {
-            outline: 3px solid #FFA500;
-        }
-
-        button {
-            width: 100%;
-            padding: 18px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(74, 144, 226, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .result-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .result-label {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        .result-value {
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-
-        .premium-positive {
-            color: #4ADE80;
-        }
-
-        .premium-negative {
-            color: #F87171;
-        }
-
-        .tip-box {
-            background: rgba(255, 165, 0, 0.2);
-            border-left: 4px solid #FFA500;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .tip-box p {
-            margin: 5px 0;
-            font-size: 0.95em;
-        }
-
-        .reset-btn {
-            background: rgba(239, 68, 68, 0.8);
-            margin-top: 10px;
-            padding: 12px;
-            font-size: 1em;
-        }
-
-        .reset-btn:hover {
-            background: rgba(239, 68, 68, 1);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-            
-            .icon {
-                width: 40px;
-                height: 40px;
-            }
-        }
-    </style>
+    <title>MSTR MNAV 계산기</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a365d">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>
-                <div class="icon"></div>
-                MSTR MNAV 계산기
-            </h1>
+            <h1>📊 MSTR MNAV 계산기</h1>
             <p class="subtitle">간단 버전 - 수동 입력</p>
         </header>
 
-        <div class="card">
-            <h2 class="card-title">💰 현재 가격 입력</h2>
-            
-            <div class="input-group">
-                <label for="btcPrice">BTC 가격 ($)</label>
-                <input type="number" id="btcPrice" placeholder="68443" step="0.01">
-            </div>
-
-            <div class="input-group">
-                <label for="mstrPrice">MSTR 주가 ($)</label>
-                <input type="number" id="mstrPrice" placeholder="133.88" step="0.01">
-            </div>
-
-            <div class="input-group">
-                <label for="btcHoldings">BTC 보유량 (개)</label>
-                <input type="number" id="btcHoldings" placeholder="714644" step="1">
-            </div>
-
-            <div class="input-group">
-                <label for="sharesOutstanding">희석 주식 수 (백만)</label>
-                <input type="number" id="sharesOutstanding" placeholder="365.461" step="0.001">
-            </div>
-
-            <button onclick="calculate()">계산하기</button>
-            <button class="reset-btn" onclick="resetToDefaults()">기본값으로 초기화</button>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">📊 계산 결과</h2>
-            
-            <div class="result-item">
-                <span class="result-label">BTC 총 가치</span>
-                <span class="result-value" id="totalBtcValue">-</span>
-            </div>
-
-            <div class="result-item">
-                <span class="result-label">주당 MNAV</span>
-                <span class="result-value" id="mnavPerShare">-</span>
-            </div>
-
-            <div class="result-item">
-                <span class="result-label">프리미엄/디스카운트</span>
-                <div>
-                    <div class="result-value" id="premiumPercent">-</div>
-                    <div id="premiumLabel" style="font-size: 0.9em; opacity: 0.8;">-</div>
+        <!-- 현재 가격 입력 섹션 -->
+        <section class="input-section">
+            <h2>💰 현재 가격 입력</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="btcPrice">BTC 가격 ($)</label>
+                    <input type="number" id="btcPrice" step="0.01" placeholder="100000">
+                </div>
+                <div class="input-group">
+                    <label for="mstrPrice">MSTR 주가 ($)</label>
+                    <input type="number" id="mstrPrice" step="0.01" placeholder="400">
+                </div>
+                <div class="input-group">
+                    <label for="btcHoldings">BTC 보유량 (개)</label>
+                    <input type="number" id="btcHoldings" step="1" value="444262">
+                </div>
+                <div class="input-group">
+                    <label for="dilutedShares">희석 주식 수 (백만)</label>
+                    <input type="number" id="dilutedShares" step="0.1" value="253">
                 </div>
             </div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">🧮 빠른 계산</h2>
-            
-            <div class="input-group">
-                <label for="targetBtcPrice">BTC가 이 가격이 되면?</label>
-                <input type="number" id="targetBtcPrice" placeholder="100000" step="0.01">
+            <div class="button-group">
+                <button onclick="calculate()" class="btn-primary">계산하기</button>
+                <button onclick="resetDefaults()" class="btn-secondary">기본값으로 초기화</button>
             </div>
+        </section>
 
-            <div class="input-group">
-                <label for="expectedPremium">예상 프리미엄 (%)</label>
-                <input type="number" id="expectedPremium" placeholder="100" step="0.1">
+        <!-- 계산 결과 섹션 -->
+        <section class="result-section">
+            <h2>📊 계산 결과</h2>
+            <div class="result-grid">
+                <div class="result-card">
+                    <div class="result-label">BTC 총 가치</div>
+                    <div class="result-value" id="btcTotalValue">-</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">주당 MNAV</div>
+                    <div class="result-value" id="mnavPerShare">-</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">프리미엄/디스카운트</div>
+                    <div class="result-value large" id="premium">-</div>
+                    <div class="signal" id="signal">-</div>
+                </div>
             </div>
+        </section>
 
-            <button onclick="predictPrice()">MSTR 가격 예측</button>
-
-            <div class="result-item" style="margin-top: 20px;">
-                <span class="result-label">예상 MSTR 가격:</span>
-                <span class="result-value" id="predictedPrice">-</span>
+        <!-- 빠른 계산 섹션 -->
+        <section class="quick-calc-section">
+            <h2>🧮 빠른 계산</h2>
+            <div class="quick-calc-card">
+                <div class="input-group">
+                    <label for="targetBtcPrice">BTC가 이 가격이 되면?</label>
+                    <input type="number" id="targetBtcPrice" step="0.01" placeholder="120000">
+                </div>
+                <div class="input-group">
+                    <label for="expectedPremium">예상 프리미엄 (%)</label>
+                    <!-- min 속성 제거하여 마이너스 값 입력 가능 -->
+                    <input type="number" id="expectedPremium" step="0.01" placeholder="0">
+                </div>
+                <button onclick="predictMstrPrice()" class="btn-primary">MSTR 가격 예측</button>
+                <div class="prediction-result">
+                    <div class="result-label">예상 MSTR 가격:</div>
+                    <div class="result-value" id="predictedMstrPrice">-</div>
+                </div>
             </div>
+        </section>
 
-            <div class="tip-box">
-                <p><strong>⚠️ 나는 반드시 백만장자가 된다^^</strong></p>
-                <p><strong>💡 팁:</strong> mnav -10이면 매수한다</p>
-                <p>MNAV: 1.1 / 1.5 / 2.5</p>
-                <p>MSTR: <a href="https://www.strategy.com" target="_blank" style="color: #FFA500;">https://www.strategy.com</a></p>
-            </div>
-        </div>
+        <footer>
+            <p><strong>⚠️ 나는 반드시 백만장자가 된다^^</strong></p>
+            <p><strong>💡 팁:</strong> mnav -10이면 매수한다</p>
+            <p>MNAV: 1.1 / 1.5 / 2.5</p>
+            <p>MSTR: <a href="https://www.strategy.com" target="_blank">https://www.strategy.com</a></p>
+        </footer>
     </div>
 
-    <script>
-        // localStorage 키 상수
-        const STORAGE_KEYS = {
-            BTC_PRICE: 'mnav_btc_price',
-            MSTR_PRICE: 'mnav_mstr_price',
-            BTC_HOLDINGS: 'mnav_btc_holdings',
-            SHARES_OUTSTANDING: 'mnav_shares_outstanding',
-            TARGET_BTC_PRICE: 'mnav_target_btc_price',
-            EXPECTED_PREMIUM: 'mnav_expected_premium'
-        };
-
-        // 기본값
-        const DEFAULTS = {
-            BTC_PRICE: 68443,
-            MSTR_PRICE: 133.88,
-            BTC_HOLDINGS: 714644,
-            SHARES_OUTSTANDING: 365.461,
-            TARGET_BTC_PRICE: 100000,
-            EXPECTED_PREMIUM: 100
-        };
-
-        // 페이지 로드 시 저장된 값 불러오기
-        window.addEventListener('DOMContentLoaded', function() {
-            loadSavedValues();
-            
-            // 입력값 변경 시 자동 저장
-            document.getElementById('btcPrice').addEventListener('change', saveValues);
-            document.getElementById('mstrPrice').addEventListener('change', saveValues);
-            document.getElementById('btcHoldings').addEventListener('change', saveValues);
-            document.getElementById('sharesOutstanding').addEventListener('change', saveValues);
-            document.getElementById('targetBtcPrice').addEventListener('change', saveValues);
-            document.getElementById('expectedPremium').addEventListener('change', saveValues);
-        });
-
-        // 저장된 값 불러오기
-        function loadSavedValues() {
-            document.getElementById('btcPrice').value = 
-                localStorage.getItem(STORAGE_KEYS.BTC_PRICE) || DEFAULTS.BTC_PRICE;
-            document.getElementById('mstrPrice').value = 
-                localStorage.getItem(STORAGE_KEYS.MSTR_PRICE) || DEFAULTS.MSTR_PRICE;
-            document.getElementById('btcHoldings').value = 
-                localStorage.getItem(STORAGE_KEYS.BTC_HOLDINGS) || DEFAULTS.BTC_HOLDINGS;
-            document.getElementById('sharesOutstanding').value = 
-                localStorage.getItem(STORAGE_KEYS.SHARES_OUTSTANDING) || DEFAULTS.SHARES_OUTSTANDING;
-            document.getElementById('targetBtcPrice').value = 
-                localStorage.getItem(STORAGE_KEYS.TARGET_BTC_PRICE) || DEFAULTS.TARGET_BTC_PRICE;
-            document.getElementById('expectedPremium').value = 
-                localStorage.getItem(STORAGE_KEYS.EXPECTED_PREMIUM) || DEFAULTS.EXPECTED_PREMIUM;
-        }
-
-        // 값 저장하기
-        function saveValues() {
-            localStorage.setItem(STORAGE_KEYS.BTC_PRICE, document.getElementById('btcPrice').value);
-            localStorage.setItem(STORAGE_KEYS.MSTR_PRICE, document.getElementById('mstrPrice').value);
-            localStorage.setItem(STORAGE_KEYS.BTC_HOLDINGS, document.getElementById('btcHoldings').value);
-            localStorage.setItem(STORAGE_KEYS.SHARES_OUTSTANDING, document.getElementById('sharesOutstanding').value);
-            localStorage.setItem(STORAGE_KEYS.TARGET_BTC_PRICE, document.getElementById('targetBtcPrice').value);
-            localStorage.setItem(STORAGE_KEYS.EXPECTED_PREMIUM, document.getElementById('expectedPremium').value);
-        }
-
-        // 기본값으로 초기화
-        function resetToDefaults() {
-            if (confirm('기본값으로 초기화하시겠습니까?')) {
-                localStorage.clear();
-                document.getElementById('btcPrice').value = DEFAULTS.BTC_PRICE;
-                document.getElementById('mstrPrice').value = DEFAULTS.MSTR_PRICE;
-                document.getElementById('btcHoldings').value = DEFAULTS.BTC_HOLDINGS;
-                document.getElementById('sharesOutstanding').value = DEFAULTS.SHARES_OUTSTANDING;
-                document.getElementById('targetBtcPrice').value = DEFAULTS.TARGET_BTC_PRICE;
-                document.getElementById('expectedPremium').value = DEFAULTS.EXPECTED_PREMIUM;
-                
-                // 결과 초기화
-                document.getElementById('totalBtcValue').textContent = '-';
-                document.getElementById('mnavPerShare').textContent = '-';
-                document.getElementById('premiumPercent').textContent = '-';
-                document.getElementById('premiumLabel').textContent = '-';
-                document.getElementById('predictedPrice').textContent = '-';
-                
-                alert('기본값으로 초기화되었습니다.');
-            }
-        }
-
-        // MNAV 계산
-        function calculate() {
-            const btcPrice = parseFloat(document.getElementById('btcPrice').value);
-            const mstrPrice = parseFloat(document.getElementById('mstrPrice').value);
-            const btcHoldings = parseFloat(document.getElementById('btcHoldings').value);
-            const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
-
-            if (!btcPrice || !mstrPrice || !btcHoldings || !sharesOutstanding) {
-                alert('모든 값을 입력해주세요.');
-                return;
-            }
-
-            // 값 저장
-            saveValues();
-
-            // BTC 총 가치 (백만 달러)
-            const totalBtcValue = (btcPrice * btcHoldings) / 1000000;
-            
-            // 주당 MNAV
-            const mnavPerShare = totalBtcValue / sharesOutstanding;
-            
-            // 프리미엄/디스카운트
-            const premium = ((mstrPrice / mnavPerShare - 1) * 100);
-
-            // 결과 표시
-            document.getElementById('totalBtcValue').textContent = 
-                `$${totalBtcValue.toFixed(2)}M`;
-            document.getElementById('mnavPerShare').textContent = 
-                `$${mnavPerShare.toFixed(2)}`;
-            
-            const premiumElement = document.getElementById('premiumPercent');
-            const premiumLabelElement = document.getElementById('premiumLabel');
-            
-            premiumElement.textContent = `${premium > 0 ? '+' : ''}${premium.toFixed(2)}%`;
-            premiumElement.className = 'result-value ' + (premium >= 0 ? 'premium-positive' : 'premium-negative');
-            premiumLabelElement.textContent = premium >= 0 ? '프리미엄' : '디스카운트';
-            premiumLabelElement.className = premium >= 0 ? 'premium-positive' : 'premium-negative';
-        }
-
-        // 가격 예측
-        function predictPrice() {
-            const targetBtcPrice = parseFloat(document.getElementById('targetBtcPrice').value);
-            const expectedPremium = parseFloat(document.getElementById('expectedPremium').value);
-            const btcHoldings = parseFloat(document.getElementById('btcHoldings').value);
-            const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
-
-            if (!targetBtcPrice || !expectedPremium || !btcHoldings || !sharesOutstanding) {
-                alert('모든 값을 입력해주세요.');
-                return;
-            }
-
-            // 값 저장
-            saveValues();
-
-            // 예상 MNAV
-            const targetTotalValue = (targetBtcPrice * btcHoldings) / 1000000;
-            const targetMnav = targetTotalValue / sharesOutstanding;
-            
-            // 프리미엄 적용
-            const predictedMstrPrice = targetMnav * (1 + expectedPremium / 100);
-
-            // 결과 표시
-            document.getElementById('predictedPrice').textContent = 
-                `$${predictedMstrPrice.toFixed(2)}`;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
